@@ -1,47 +1,116 @@
-## A PFD-CP Type-II ∆Σ Fractional-N Phase Locked Loop Simulation and Layout
+# Design of a Linear Transconductance OTA using the Sky130 PDK
 
-### Design and documented by Kithmin Wickremasinghe (MASc).
+### Design and documented by [Your Name]
 
-### 1. Motivation for the Project:
+---
 
-### 2. Overview of the Project:
+## 1. Motivation for the Project
 
-The PLL is a charge-pump (CP) based (Type-II) PLL which uses a standard fractional-N architecture, where an output frequency divider (FD) is used to set the frequency multiplication with respect to the reference clock input. The output frequency `f_out` is `N * f_ref`, where `N` is the division ratio of `XDIV_OUT` and `f_ref` is the input clock frequency. N can be between 1 and 15, and is designed for a 10 MHz reference input, which implies an output frequency between 10 kHz and 150 MHz. Documentation for the PLL subcells is included below.
+Operational Transconductance Amplifiers (OTAs) are essential building blocks for analog signal processing, particularly in Gm-C filter design, biomedical circuits, and communication systems. A linear OTA extends the usable input voltage range, improving filter accuracy and robustness in practical applications.  
+This project explores the design, simulation, and layout of a linear transconductance OTA using only open-source EDA tools with the SkyWater 130 nm open-source PDK.
 
-### 3. Block Diagram of the Project:
+---
 
-### 4. Specifications of the Project:
+## 2. Overview of the Project
 
-### 5. Circuit Design:
+The OTA is based on a **source-degeneration scheme**, which provides:
+- **Linearized transconductance** over a wide differential input range  
+- **Reduced transconductance** for low-frequency applications  
+- **Compatibility with Gm-C filters**  
 
-#### 5.1 PLL:
+Two design approaches were studied:
+1. Source-degeneration **poly resistors**  
+2. Source-degeneration **MOSFETs in triode region**
 
-#### 5.2 Phase-frequency detector (PFD):
+Both versions are simulated and compared for linearity, power consumption, and robustness against supply variations.
 
-#### 5.3 Charge pump (CP):
+---
 
-#### 5.4 Loop filter:
+## 3. Block Diagram of the OTA
 
-#### 5.5 Voltage-controlled oscillator (VCO):
+*(Insert schematic/block diagram here)*
 
-#### 5.6 Frequency divider (FD):
+---
 
-### 6. Simulation results:
+## 4. Specifications of the Project
 
-#### 6.1 PLL:
+- **Process:** SkyWater SKY130 (1.8V CMOS)  
+- **Transconductance target (Gm):** ≈ 21 µA/V  
+- **Input common-mode voltage (VCM):** 0.9 V  
+- **Supply voltage (VDD):** 1.8 V  
+- **Linearity range:** ±0.59 V differential input  
+- **Output impedance:** High, due to cascode current mirrors  
+- **Technology:** Open-source design flow (Xschem, NGSpice, Magic, KLayout)
 
-#### 6.2 Voltage-controlled oscillator (VCO):
+---
 
-#### 6.3 Charge pump (CP):
+## 5. Circuit Design
 
-#### 6.4 Frequency divider (FD):
+### 5.1 OTA Core
+- Differential pair with source degeneration resistors/MOSFETs  
+- Current mirrors for biasing  
+- Cascode stages for high output impedance  
 
-### 7. Control Interface:
+### 5.2 Biasing Circuit
+- Low-voltage biasing to maximize output swing  
+- Generates VBP and VBN for cascode transistors  
 
-### 8. Layout Design:
+### 5.3 Source Degeneration Elements
+- Option A: High-resistance poly resistors  
+- Option B: NMOS devices in triode region  
 
-### 9. Physical Verification (DRC, LVS):
+---
 
-### 10. Post-layout Verification after PEX:
+## 6. Simulation Results
 
-### 11. GDS streaming:
+### 6.1 DC Sweep
+- Output current vs. differential input voltage  
+- Shows linear region of ±0.59 V  
+
+### 6.2 Transconductance (AC Analysis)
+- Maintains ~21 µA/V across input swing  
+- Comparison of resistor vs MOSFET degeneration  
+
+### 6.3 Power Consumption
+- Bias current: 9.5 µA (resistor version), 10 µA (MOSFET version)  
+
+---
+
+## 7. Layout Design
+
+- **Tools Used:** Magic VLSI, KLayout  
+- **Block Area:** ~1820 µm² (35 µm x 52 µm)  
+- **Features:**  
+  - Guard rings around devices  
+  - Poly resistors and MOSFET degeneration options  
+  - Auto-generated device geometries from PDK  
+
+---
+
+## 8. Physical Verification
+
+- **DRC:** Passed using Magic and KLayout rule decks  
+- **LVS:** Verified with extracted netlist  
+- **PEX:** Extracted parasitics included for post-layout simulations  
+
+---
+
+## 9. Post-layout Verification
+
+- Linearity confirmed after PEX simulation  
+- Both resistor and MOSFET degeneration options validated  
+- MOSFET degeneration shows higher sensitivity to VDD variations  
+
+---
+
+## 10. GDS Streaming
+
+Final GDS exported using Magic and KLayout. Ready for tapeout on SkyWater 130 nm PDK.
+
+---
+
+## 11. References
+
+- SkyWater SKY130 PDK [GitHub](https://github.com/google/skywater-pdk)  
+- Original design concepts inspired by [Carolina Vieira Souza et al., "Design of a Linear Transconductance OTA using the Sky130 PDK"]  
+
